@@ -143,20 +143,30 @@ body {
 }
 .unit-switch-note { font-size: 0.68rem; opacity: 0.6; margin: -0.9rem 0 1.25rem; }
 
-.progress-box { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; }
-.progress-circle { position: relative; width: 66px; height: 66px; }
-.progress-circle svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-.progress-circle-bg { fill: none; stroke: rgba(255,255,255,0.16); stroke-width: 4; }
+.progress-box { display: flex; flex-direction: column; align-items: center; gap: 0.65rem; margin-bottom: 1.5rem; }
+.progress-circle { position: relative; width: 116px; height: 116px; }
+.progress-circle-plate {
+  position: absolute; inset: 0; border-radius: 50%; background: var(--white);
+  box-shadow: 0 14px 30px -10px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.6);
+}
+.progress-circle svg { position: relative; width: 100%; height: 100%; transform: rotate(-90deg); display: block; }
+.progress-circle-bg { fill: none; stroke: #e4e9f1; stroke-width: 12; }
 .progress-circle-fill {
-  fill: none; stroke: var(--gold-light); stroke-width: 4; stroke-linecap: round;
+  fill: none; stroke: var(--blue-500); stroke-width: 12; stroke-linecap: round;
   transition: stroke-dashoffset 0.5s var(--ease);
-  filter: drop-shadow(0 0 4px rgba(232,198,90,0.55));
+  filter: drop-shadow(0 4px 5px rgba(26,86,160,0.45));
+}
+.progress-circle-inner {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 66px; height: 66px; border-radius: 50%; background: var(--white);
+  box-shadow: 0 8px 16px -5px rgba(10,44,86,0.3), inset 0 -2px 4px rgba(10,44,86,0.06);
+  display: flex; align-items: center; justify-content: center;
 }
 .progress-circle-label {
-  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--white);
+  font-family: var(--font-display); font-weight: 800; font-size: 1.2rem; letter-spacing: -0.02em;
+  color: var(--blue-600);
 }
-.progress-circle-caption { font-size: 0.72rem; opacity: 0.85; text-align: center; }
+.progress-circle-caption { font-size: 0.72rem; opacity: 0.85; text-align: center; color: var(--white); }
 
 .nav-group-title {
   font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
@@ -2009,7 +2019,7 @@ function renderSidebar(currentStep) {
   const dataStepId = activeUnit === "UP" ? "data_up" : "data_uk";
   const dataStepLabel = activeUnit === "UP" ? "Data Umum Unit Pengolah" : "Data Umum Unit Kearsipan";
   const groupTitle = activeUnit === "UP" ? "A. Unit Pengolah" : "B. Unit Kearsipan";
-  const circumference = 113.1;
+  const circumference = 251.3;
   const offset = (circumference - (circumference * prog.pct) / 100).toFixed(1);
   // Ikon dari Flaticon pack "Home Screen Apps" — https://www.flaticon.com/packs/home-screen-apps-21
   function formIconFor(title) {
@@ -2057,11 +2067,14 @@ function renderSidebar(currentStep) {
       </div>
       <div class="progress-box">
         <div class="progress-circle">
-          <svg viewBox="0 0 44 44">
-            <circle class="progress-circle-bg" cx="22" cy="22" r="18"></circle>
-            <circle class="progress-circle-fill" cx="22" cy="22" r="18" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"></circle>
+          <div class="progress-circle-plate"></div>
+          <svg viewBox="0 0 100 100">
+            <circle class="progress-circle-bg" cx="50" cy="50" r="40"></circle>
+            <circle class="progress-circle-fill" cx="50" cy="50" r="40" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"></circle>
           </svg>
-          <div class="progress-circle-label">${prog.pct}%</div>
+          <div class="progress-circle-inner">
+            <div class="progress-circle-label">${prog.pct}%</div>
+          </div>
         </div>
         <div class="progress-circle-caption">Progres ${activeUnit === "UP" ? "Unit Pengolah" : "Unit Kearsipan"}</div>
       </div>
@@ -2205,7 +2218,7 @@ function attachHandlers(step) {
         const pct = totalProgress().pct;
         const fill = document.querySelector(".progress-circle-fill");
         const label = document.querySelector(".progress-circle-label");
-        if (fill) fill.style.strokeDashoffset = (113.1 - (113.1 * pct) / 100).toFixed(1);
+        if (fill) fill.style.strokeDashoffset = (251.3 - (251.3 * pct) / 100).toFixed(1);
         if (label) label.textContent = `${pct}%`;
       };
     });
