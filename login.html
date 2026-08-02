@@ -1963,6 +1963,15 @@ function renderSidebar(currentStep) {
   const groupTitle = activeUnit === "UP" ? "A. Unit Pengolah" : "B. Unit Kearsipan";
   const circumference = 113.1;
   const offset = (circumference - (circumference * prog.pct) / 100).toFixed(1);
+  function formIconFor(title) {
+    if (title.startsWith("Penciptaan")) return { icon: "ti-file-plus", color: "var(--gold-light)" };
+    if (title.startsWith("Penggunaan")) return { icon: "ti-file-search", color: "var(--teal-light)" };
+    if (title.startsWith("Pemeliharaan")) return { icon: "ti-tool", color: "var(--gold-light)" };
+    if (title.startsWith("Penyusutan")) return { icon: "ti-recycle", color: "var(--teal-light)" };
+    if (title.startsWith("Sumber Daya Manusia")) return { icon: "ti-users", color: "var(--gold-light)" };
+    if (title.startsWith("Prasarana")) return { icon: "ti-building-warehouse", color: "var(--teal-light)" };
+    return { icon: "ti-clipboard-text", color: "var(--teal-light)" };
+  }
   function item(stepId, label, iconClass, iconColor) {
     const active = stepId === currentStep ? "active" : "";
     const idx = steps.indexOf(stepId);
@@ -2011,7 +2020,7 @@ function renderSidebar(currentStep) {
         <div class="nav-group-title">${groupTitle}</div>
         <ul class="step-list">
           ${item(dataStepId, dataStepLabel, "ti-folder-open", "var(--gold-light)")}
-          ${forms.map((f) => item(f.id, f.title, "ti-clipboard-text", "var(--teal-light)")).join("")}
+          ${forms.map((f) => { const ic = formIconFor(f.title); return item(f.id, f.title, ic.icon, ic.color); }).join("")}
         </ul>
         <ul class="step-list">
           ${item("review", "Tinjau &amp; Kirim", "ti-send", "var(--teal-light)")}
