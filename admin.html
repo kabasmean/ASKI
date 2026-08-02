@@ -5,7 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Admin — ASKI PEMDA</title>
 <style>
-  :root { --navy-900:#B30000; --navy-800:#CC0000; --bg:#f6f7f9; --card:#fff; --border:#e2e4e8; --text:#1f2430; --muted:#6b7280; }
+  :root {
+    --navy-900:#B30000; --navy-800:#CC0000; --bg:#f6f7f9; --card:#fff; --border:#e2e4e8;
+    --text:#1f2430; --muted:#6b7280;
+    --gray-900:#1c2530; --gray-600:#55606b; --gray-300:#d6dee6;
+    --blue-500:#2563a8; --blue-100:#e8f0fb; --blue-600:#1a56a0;
+    --red:#b91c1c; --green:#1a7f37;
+    --radius:16px; --radius-sm:10px;
+    --font-display:"Poppins","Segoe UI",sans-serif;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --shadow-lg: 0 24px 60px -24px rgba(7,28,61,0.4);
+  }
   * { box-sizing: border-box; }
   body { margin:0; font-family: system-ui, "Segoe UI", Arial, sans-serif; background:var(--bg); color:var(--text); }
   .wrap { max-width: 980px; margin: 0 auto; padding: 24px 16px 60px; }
@@ -34,27 +44,78 @@
   .btn-sm { padding:4px 9px; font-size:12px; border-radius:5px; margin-right:4px; }
   .btn-danger { background:#fff; border:1px solid #fecaca; color:#b91c1c; }
   .btn-danger:hover { background:#fee2e2; }
+
+  /* ---------- LOGIN GATE (selaras dengan login.html) ---------- */
+  .auth-screen {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 2rem 1rem;
+  }
+  .auth-card {
+    width: 100%; max-width: 400px; background: var(--white, #fff);
+    border: 1px solid rgba(214,222,230,0.7); border-radius: var(--radius);
+    box-shadow: var(--shadow-lg); padding: 2rem 1.75rem;
+  }
+  .auth-brand { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1.4rem; }
+  .auth-brand img { width: 48px; height: 48px; border-radius: 50%; box-shadow: 0 0 0 3px rgba(179,0,0,0.12); }
+  .auth-brand-title { font-family: var(--font-display); font-weight: 700; font-size: 0.78rem; color: var(--navy-900); white-space: nowrap; }
+  .auth-brand-sub { font-size: 0.75rem; color: var(--gray-600); }
+  .auth-card h1 { font-size: 1.15rem; margin: 0 0 0.25rem; font-family: var(--font-display); color: var(--navy-900); }
+  .auth-card p.auth-lead { color: var(--gray-600); font-size: 0.85rem; margin: 0 0 1.25rem; }
+  .auth-field { margin-bottom: 1rem; }
+  .auth-field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--gray-900); margin-bottom: 0.3rem; }
+  .auth-field input {
+    width: 100%; padding: 0.65rem 0.8rem; border: 1.5px solid var(--gray-300);
+    border-radius: var(--radius-sm); font-size: 0.92rem; background: #fff;
+    transition: border-color 0.18s var(--ease), box-shadow 0.18s var(--ease);
+  }
+  .auth-field input:focus { outline: none; border-color: var(--blue-500); box-shadow: 0 0 0 3px var(--blue-100); }
+  .auth-submit {
+    width: 100%; margin-top: 0.4rem; cursor: pointer; border: none; border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem; font-size: 0.92rem; font-weight: 700; letter-spacing: 0.01em;
+    background: linear-gradient(160deg, var(--navy-900), var(--navy-800));
+    color: #fff; transition: filter 0.18s var(--ease);
+  }
+  .auth-submit:hover { filter: brightness(1.08); }
+  .auth-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+  .auth-msg { font-size: 0.82rem; margin-top: 0.9rem; }
+  .auth-msg.err { color: var(--red); }
+  .auth-msg.ok { color: var(--green); }
+  .auth-foot { margin-top: 1.25rem; font-size: 0.8rem; color: var(--gray-600); text-align: center; }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+<!-- LOGIN GATE (selaras dengan login.html) -->
+<div class="auth-screen" id="loginCard">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <img src="https://iili.io/CUHJTUF.png" alt="Archive logo" />
+      <div>
+        <div class="auth-brand-title">AUDIT SISTEM KEARSIPAN INTERNAL</div>
+        <div class="auth-brand-sub">Pemerintah Daerah Kabupaten Malaka</div>
+      </div>
+    </div>
+    <h1>Masuk sebagai Admin</h1>
+    <p class="auth-lead">Khusus untuk pengelola pusat ASKI PEMDA.</p>
+    <div class="auth-field">
+      <label>Email</label>
+      <input id="loginEmail" type="email" autocomplete="username" placeholder="admin@contoh.go.id" />
+    </div>
+    <div class="auth-field">
+      <label>Kata Sandi</label>
+      <input id="loginPass" type="password" autocomplete="current-password" />
+    </div>
+    <button class="auth-submit" onclick="doLogin()">Masuk</button>
+    <div class="auth-msg" id="loginMsg"></div>
+  </div>
+</div>
+
 <div class="wrap">
-  <header class="top">
+  <header class="top hidden" id="dashboardHeader">
     <h1>🗄️ Admin ASKI PEMDA</h1>
     <div id="who"></div>
   </header>
-
-  <!-- LOGIN -->
-  <div class="card" id="loginCard">
-    <h2>Masuk sebagai Admin</h2>
-    <label>Email</label>
-    <input id="loginEmail" type="email" placeholder="admin@contoh.go.id" />
-    <label>Kata Sandi</label>
-    <input id="loginPass" type="password" />
-    <div style="margin-top:14px;">
-      <button class="btn-primary" onclick="doLogin()">Masuk</button>
-    </div>
-    <div class="msg" id="loginMsg"></div>
-  </div>
 
   <!-- DASHBOARD -->
   <div id="dashboard" class="hidden">
@@ -123,8 +184,8 @@ let sb = null;
 if (window.supabase && SUPABASE_URL.indexOf("YOUR-PROJECT") === -1) {
   sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 } else {
-  document.getElementById("loginMsg").innerHTML =
-    '<span class="err">Supabase belum dikonfigurasi. Isi SUPABASE_URL & SUPABASE_ANON_KEY di admin.html.</span>';
+  document.getElementById("loginMsg").innerHTML = "Supabase belum dikonfigurasi. Isi SUPABASE_URL & SUPABASE_ANON_KEY di admin.html.";
+  document.getElementById("loginMsg").className = "auth-msg err";
 }
 
 let dinasList = [];
@@ -134,9 +195,10 @@ async function doLogin() {
   const password = document.getElementById("loginPass").value;
   const msg = document.getElementById("loginMsg");
   msg.textContent = "";
+  msg.className = "auth-msg";
   if (!sb) return;
   const { data, error } = await sb.auth.signInWithPassword({ email, password });
-  if (error) { msg.innerHTML = `<span class="err">${error.message}</span>`; return; }
+  if (error) { msg.textContent = error.message; msg.className = "auth-msg err"; return; }
   await checkSessionAndRole();
 }
 
@@ -150,13 +212,14 @@ async function checkSessionAndRole() {
   if (!session) return;
   const { data: profile, error } = await sb.from("profiles").select("*").eq("id", session.user.id).single();
   if (error || !profile || profile.role !== "admin") {
-    document.getElementById("loginMsg").innerHTML =
-      '<span class="err">Akun ini tidak memiliki hak akses admin.</span>';
+    document.getElementById("loginMsg").textContent = "Akun ini tidak memiliki hak akses admin.";
+    document.getElementById("loginMsg").className = "auth-msg err";
     await sb.auth.signOut();
     return;
   }
   document.getElementById("who").textContent = session.user.email;
   document.getElementById("loginCard").classList.add("hidden");
+  document.getElementById("dashboardHeader").classList.remove("hidden");
   document.getElementById("dashboard").classList.remove("hidden");
   await loadDinas();
   await loadInvites();
