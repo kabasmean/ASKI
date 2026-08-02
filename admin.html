@@ -4,46 +4,135 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Admin — ASKI PEMDA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --navy-900:#B30000; --navy-800:#CC0000; --bg:#f6f7f9; --card:#fff; --border:#e2e4e8;
-    --text:#1f2430; --muted:#6b7280;
-    --gray-900:#1c2530; --gray-600:#55606b; --gray-300:#d6dee6;
-    --blue-500:#2563a8; --blue-100:#e8f0fb; --blue-600:#1a56a0;
-    --red:#b91c1c; --green:#1a7f37;
+    /* ---- Palet: buku register arsip (paper + segel merah + kuningan) ---- */
+    --paper:#F7F2E6; --paper-card:#FFFFFF; --ink:#241F1A; --ink-soft:#746B5A;
+    --maroon:#A3242A; --maroon-deep:#6E1620; --brass:#B08D2B; --brass-light:#EADFB8;
+    --line:#E6DEC8; --danger:#B3261E; --ok:#3F6C4B;
+
+    /* kompatibilitas dengan gaya login.html */
+    --navy-900:#B30000; --navy-800:#CC0000; --gray-900:#1c2530; --gray-600:#55606b;
+    --gray-300:#d6dee6; --blue-500:#2563a8; --blue-100:#e8f0fb; --red:#b91c1c; --green:#1a7f37;
     --radius:16px; --radius-sm:10px;
     --font-display:"Poppins","Segoe UI",sans-serif;
+    --font-serif:"Fraunces",Georgia,serif;
+    --font-body:"Inter",system-ui,"Segoe UI",sans-serif;
+    --font-mono:"IBM Plex Mono",ui-monospace,monospace;
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
     --shadow-lg: 0 24px 60px -24px rgba(7,28,61,0.4);
   }
   * { box-sizing: border-box; }
-  body { margin:0; font-family: system-ui, "Segoe UI", Arial, sans-serif; background:var(--bg); color:var(--text); }
-  .wrap { max-width: 980px; margin: 0 auto; padding: 24px 16px 60px; }
-  header.top { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
-  header.top h1 { font-size:18px; margin:0; }
-  .card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:18px; margin-bottom:18px; }
-  .card h2 { font-size:15px; margin:0 0 12px; color:var(--navy-900); }
-  label { display:block; font-size:13px; margin:10px 0 4px; color:var(--muted); }
-  input, select { width:100%; padding:9px 10px; border:1px solid var(--border); border-radius:6px; font-size:14px; }
-  .row { display:flex; gap:10px; flex-wrap:wrap; }
-  .row > * { flex:1; min-width:180px; }
-  button { cursor:pointer; border:none; border-radius:6px; padding:9px 16px; font-size:14px; font-weight:600; }
-  .btn-primary { background:var(--navy-900); color:#fff; }
-  .btn-primary:hover { background:var(--navy-800); }
-  .btn-ghost { background:#fff; border:1px solid var(--border); color:var(--text); }
-  table { width:100%; border-collapse: collapse; margin-top:10px; font-size:13px; }
-  th, td { border:1px solid var(--border); padding:7px 9px; text-align:left; }
-  th { background:#faf5f5; }
-  .msg { font-size:13px; margin-top:8px; }
-  .msg.err { color:#b91c1c; }
-  .msg.ok { color:#15803d; }
+  body { margin:0; font-family: var(--font-body); background:var(--paper); color:var(--ink); }
   .hidden { display:none !important; }
-  .badge { display:inline-block; padding:2px 8px; border-radius:20px; font-size:11px; background:#fee2e2; color:#b91c1c; }
-  .badge.used { background:#f3f4f6; color:#6b7280; }
-  code.inv { background:#f3f4f6; padding:2px 6px; border-radius:4px; }
-  .btn-sm { padding:4px 9px; font-size:12px; border-radius:5px; margin-right:4px; }
-  .btn-danger { background:#fff; border:1px solid #fecaca; color:#b91c1c; }
-  .btn-danger:hover { background:#fee2e2; }
+
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  /* ---------- TOPBAR ---------- */
+  header.admin-topbar {
+    display:flex; align-items:center; justify-content:space-between;
+    padding-bottom:18px; margin-bottom:30px; border-bottom: 2px solid var(--brass);
+  }
+  .admin-brand { display:flex; align-items:center; gap:12px; }
+  .seal-mark {
+    width:42px; height:42px; border-radius:50%; flex-shrink:0;
+    background: radial-gradient(circle at 32% 28%, var(--maroon), var(--maroon-deep));
+    color:#fff; font-family: var(--font-serif); font-weight:700; font-size:15px;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 0 0 3px var(--brass-light);
+  }
+  .admin-brand-title { font-family: var(--font-serif); font-weight:700; font-size:1.25rem; color:var(--maroon-deep); line-height:1.1; }
+  .admin-brand-sub { font-size:.7rem; text-transform:uppercase; letter-spacing:.09em; color:var(--ink-soft); margin-top:2px; }
+  .admin-user { display:flex; align-items:center; gap:14px; }
+  .admin-user-email { font-size:.82rem; color:var(--ink-soft); font-family: var(--font-mono); }
+
+  /* ---------- STAT STRIP ---------- */
+  .stat-strip { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:32px; }
+  .stat-card {
+    background:var(--paper-card); border:1px solid var(--line); border-top:3px dashed var(--brass);
+    border-radius:4px; padding:20px 20px 18px; opacity:0; animation: fadeUp .45s var(--ease) forwards;
+  }
+  .stat-card:nth-child(2) { animation-delay: .06s; }
+  .stat-card:nth-child(3) { animation-delay: .12s; }
+  .stat-value { font-family: var(--font-mono); font-weight:600; font-size:2.1rem; color:var(--maroon-deep); line-height:1; }
+  .stat-label { margin-top:8px; font-size:.72rem; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-soft); }
+
+  /* ---------- FOLDER CARD (pengganti .card) ---------- */
+  .folder-card {
+    position:relative; background:var(--paper-card); border:1px solid var(--line);
+    border-top:3px dashed var(--brass); border-radius:4px; padding:30px 24px 24px; margin-bottom:22px;
+    opacity:0; animation: fadeUp .45s var(--ease) forwards;
+  }
+  .folder-tab {
+    position:absolute; top:-15px; left:22px; width:30px; height:30px; border-radius:50%;
+    background:var(--maroon); color:#fff; font-family: var(--font-mono); font-size:.72rem; font-weight:600;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 3px 8px rgba(163,36,42,0.32);
+  }
+  .folder-eyebrow { font-family: var(--font-serif); font-style:italic; font-weight:500; font-size:.8rem; color:var(--brass); margin:2px 0 3px; }
+  .folder-card h2 {
+    font-family: var(--font-serif); font-weight:600; font-size:1.2rem; margin:0 0 16px; color:var(--ink);
+    border-bottom:1px solid var(--line); padding-bottom:12px;
+  }
+  .folder-note { font-size:.82rem; color:var(--ink-soft); margin:-8px 0 14px; line-height:1.5; }
+
+  /* ---------- FORM ELEMENTS ---------- */
+  label { display:block; font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; margin:12px 0 6px; color:var(--ink-soft); font-weight:600; }
+  input, select {
+    width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:4px; font-size:.9rem;
+    font-family: var(--font-body); background:#FFFDF8; color:var(--ink);
+    transition: border-color .15s var(--ease), box-shadow .15s var(--ease);
+  }
+  input:focus, select:focus { outline:none; border-color:var(--brass); box-shadow:0 0 0 3px rgba(176,141,43,0.18); }
+  .row { display:flex; gap:12px; flex-wrap:wrap; }
+  .row > * { flex:1; min-width:200px; }
+
+  /* ---------- BUTTONS ---------- */
+  button { cursor:pointer; border:none; border-radius:4px; font-size:.88rem; font-weight:600; font-family: var(--font-body); }
+  button:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+  .btn-primary {
+    background: linear-gradient(160deg, var(--maroon), var(--maroon-deep)); color:#fff;
+    padding:11px 22px; letter-spacing:.01em; transition: filter .18s var(--ease);
+  }
+  .btn-primary:hover { filter: brightness(1.1); }
+  .btn-ghost { background:#fff; border:1px solid var(--line); color:var(--ink); padding:9px 16px; transition: border-color .18s, color .18s; }
+  .btn-ghost:hover { border-color:var(--brass); color:var(--maroon-deep); }
+  .btn-danger { background:#fff; border:1px solid #E8C2C0; color:var(--danger); }
+  .btn-danger:hover { background:#FBEDEC; }
+  .btn-sm { padding:6px 12px; font-size:.76rem; margin-right:6px; border-radius:4px; }
+
+  /* ---------- TABLE (gaya buku register) ---------- */
+  .table-scroll { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; margin-top:4px; font-size:.85rem; min-width:520px; }
+  thead th {
+    text-align:left; padding:10px 12px; font-size:.68rem; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--ink-soft); border-bottom:2px solid var(--brass); font-weight:700; white-space:nowrap;
+  }
+  tbody td { padding:12px; border-bottom:1px solid var(--line); vertical-align:middle; }
+  tbody tr:hover { background:#FBF7EA; }
+  code.inv { font-family: var(--font-mono); background:#F2EAD3; padding:3px 8px; border-radius:3px; font-size:.8rem; letter-spacing:.02em; }
+
+  .badge {
+    display:inline-block; padding:3px 10px; border-radius:20px; font-size:.66rem; font-weight:700;
+    letter-spacing:.03em; text-transform:uppercase; background:#FBEDEC; color:var(--danger);
+  }
+  .badge.used { background:#EFEAE0; color:var(--ink-soft); }
+
+  .msg { font-size:.8rem; margin-top:10px; }
+  .err { color:var(--danger); }
+  .ok { color:var(--ok); }
+
+  @keyframes fadeUp { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+  @media (prefers-reduced-motion: reduce) {
+    .stat-card, .folder-card { animation: none; opacity:1; }
+  }
+
+  @media (max-width: 720px) {
+    .stat-strip { grid-template-columns:1fr; }
+    .folder-card { padding:26px 18px 20px; }
+    header.admin-topbar { flex-wrap:wrap; gap:12px; }
+  }
 
   /* ---------- LOGIN GATE (selaras dengan login.html) ---------- */
   .auth-screen {
@@ -51,7 +140,7 @@
     padding: 2rem 1rem;
   }
   .auth-card {
-    width: 100%; max-width: 400px; background: var(--white, #fff);
+    width: 100%; max-width: 400px; background: #fff;
     border: 1px solid rgba(214,222,230,0.7); border-radius: var(--radius);
     box-shadow: var(--shadow-lg); padding: 2rem 1.75rem;
   }
@@ -62,7 +151,7 @@
   .auth-card h1 { font-size: 1.15rem; margin: 0 0 0.25rem; font-family: var(--font-display); color: var(--navy-900); }
   .auth-card p.auth-lead { color: var(--gray-600); font-size: 0.85rem; margin: 0 0 1.25rem; }
   .auth-field { margin-bottom: 1rem; }
-  .auth-field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--gray-900); margin-bottom: 0.3rem; }
+  .auth-field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--gray-900); margin-bottom: 0.3rem; text-transform:none; letter-spacing:normal; }
   .auth-field input {
     width: 100%; padding: 0.65rem 0.8rem; border: 1.5px solid var(--gray-300);
     border-radius: var(--radius-sm); font-size: 0.92rem; background: #fff;
@@ -82,8 +171,6 @@
   .auth-msg.ok { color: var(--green); }
   .auth-foot { margin-top: 1.25rem; font-size: 0.8rem; color: var(--gray-600); text-align: center; }
 </style>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 <!-- LOGIN GATE (selaras dengan login.html) -->
@@ -112,14 +199,41 @@
 </div>
 
 <div class="wrap">
-  <header class="top hidden" id="dashboardHeader">
-    <h1>🗄️ Admin ASKI PEMDA</h1>
-    <div id="who"></div>
+  <header class="admin-topbar hidden" id="dashboardHeader">
+    <div class="admin-brand">
+      <span class="seal-mark">AP</span>
+      <div>
+        <div class="admin-brand-title">ASKI PEMDA</div>
+        <div class="admin-brand-sub">Buku Register Admin</div>
+      </div>
+    </div>
+    <div class="admin-user">
+      <span class="admin-user-email" id="who"></span>
+      <button class="btn-ghost btn-sm" onclick="doLogout()">Keluar</button>
+    </div>
   </header>
 
   <!-- DASHBOARD -->
   <div id="dashboard" class="hidden">
-    <div class="card">
+
+    <div class="stat-strip">
+      <div class="stat-card">
+        <div class="stat-value" id="statDinas">—</div>
+        <div class="stat-label">Dinas Terdaftar</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statKodeAktif">—</div>
+        <div class="stat-label">Kode Belum Dipakai</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statAkun">—</div>
+        <div class="stat-label">Akun Terdaftar</div>
+      </div>
+    </div>
+
+    <section class="folder-card">
+      <span class="folder-tab">01</span>
+      <div class="folder-eyebrow">Registrasi Instansi</div>
       <h2>Tambah Dinas</h2>
       <div class="row">
         <div>
@@ -131,11 +245,13 @@
         </div>
       </div>
       <div class="msg" id="dinasMsg"></div>
-    </div>
+    </section>
 
-    <div class="card">
+    <section class="folder-card">
+      <span class="folder-tab">02</span>
+      <div class="folder-eyebrow">Akses Masuk</div>
       <h2>Buat Kode Undangan Login</h2>
-      <p style="font-size:13px;color:var(--muted);margin-top:-6px;">
+      <p class="folder-note">
         Kode undangan dibagikan ke dinas terkait. Dinas mendaftar sendiri
         lewat halaman <code class="inv">register.html</code> memakai kode ini,
         dan otomatis terhubung ke dinas yang dipilih.
@@ -150,32 +266,39 @@
         </div>
       </div>
       <div class="msg" id="inviteMsg"></div>
-    </div>
+    </section>
 
-    <div class="card">
+    <section class="folder-card">
+      <span class="folder-tab">03</span>
+      <div class="folder-eyebrow">Buku Register</div>
       <h2>Daftar Dinas & Kode Undangan</h2>
-      <table>
-        <thead><tr><th>Dinas</th><th>Kode</th><th>Status</th><th>Dibuat</th><th>Aksi</th></tr></thead>
-        <tbody id="inviteTable"><tr><td colspan="5">Memuat…</td></tr></tbody>
-      </table>
-    </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Dinas</th><th>Kode</th><th>Status</th><th>Dibuat</th><th>Aksi</th></tr></thead>
+          <tbody id="inviteTable"><tr><td colspan="5">Memuat…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
 
-    <div class="card">
+    <section class="folder-card">
+      <span class="folder-tab">04</span>
+      <div class="folder-eyebrow">Buku Register</div>
       <h2>Akun Terdaftar</h2>
-      <table>
-        <thead><tr><th>Nama</th><th>Dinas</th><th>Peran</th><th>Terdaftar</th></tr></thead>
-        <tbody id="userTable"><tr><td colspan="4">Memuat…</td></tr></tbody>
-      </table>
-    </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Nama</th><th>Dinas</th><th>Peran</th><th>Terdaftar</th></tr></thead>
+          <tbody id="userTable"><tr><td colspan="4">Memuat…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
 
-    <button class="btn-ghost" onclick="doLogout()">Keluar</button>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ============================================================
-   KONFIGURASI SUPABASE — samakan dengan aski-pemda.html
+   KONFIGURASI SUPABASE — samakan dengan login.html
    ============================================================ */
 const SUPABASE_URL = "https://aszvkvfmqpgakycfesxh.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzenZrdmZtcXBnYWt5Y2Zlc3hoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2NDcxNDQsImV4cCI6MjEwMTIyMzE0NH0.xwfXaoh_jrgKzqA3zXkQEHB141AkWBel0sjhEe6bMJk";
@@ -232,6 +355,7 @@ async function loadDinas() {
   dinasList = data || [];
   const sel = document.getElementById("inviteDinas");
   sel.innerHTML = dinasList.map((d) => `<option value="${d.id}">${d.nama}</option>`).join("");
+  document.getElementById("statDinas").textContent = dinasList.length;
 }
 
 async function addDinas() {
@@ -267,7 +391,11 @@ async function loadInvites() {
     .select("code, used, created_at, dinas:dinas_id(nama)")
     .order("created_at", { ascending: false });
   const tbody = document.getElementById("inviteTable");
-  if (error || !data || !data.length) { tbody.innerHTML = "<tr><td colspan='5'>Belum ada kode undangan.</td></tr>"; return; }
+  if (error || !data || !data.length) {
+    tbody.innerHTML = "<tr><td colspan='5'>Belum ada kode undangan.</td></tr>";
+    document.getElementById("statKodeAktif").textContent = "0";
+    return;
+  }
   tbody.innerHTML = data.map((i) => `
     <tr>
       <td>${i.dinas ? i.dinas.nama : "-"}</td>
@@ -279,6 +407,7 @@ async function loadInvites() {
         <button class="btn-danger btn-sm" onclick="deleteInvite('${i.code}')">Hapus</button>
       </td>
     </tr>`).join("");
+  document.getElementById("statKodeAktif").textContent = data.filter((i) => !i.used).length;
 }
 
 async function resetInvite(code) {
@@ -301,7 +430,11 @@ async function loadUsers() {
     .select("nama, role, created_at, dinas:dinas_id(nama)")
     .order("created_at", { ascending: false });
   const tbody = document.getElementById("userTable");
-  if (error || !data || !data.length) { tbody.innerHTML = "<tr><td colspan='4'>Belum ada akun terdaftar.</td></tr>"; return; }
+  if (error || !data || !data.length) {
+    tbody.innerHTML = "<tr><td colspan='4'>Belum ada akun terdaftar.</td></tr>";
+    document.getElementById("statAkun").textContent = "0";
+    return;
+  }
   tbody.innerHTML = data.map((u) => `
     <tr>
       <td>${u.nama || "-"}</td>
@@ -309,6 +442,7 @@ async function loadUsers() {
       <td>${u.role}</td>
       <td>${new Date(u.created_at).toLocaleString("id-ID")}</td>
     </tr>`).join("");
+  document.getElementById("statAkun").textContent = data.length;
 }
 
 if (sb) checkSessionAndRole();
