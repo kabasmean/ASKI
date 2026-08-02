@@ -647,19 +647,23 @@ h3 { font-family: var(--font-display); color: var(--navy-800); font-size: 1.05re
 .auth-foot a { color: var(--blue-600); font-weight: 600; text-decoration: none; }
 .auth-foot a:hover { text-decoration: underline; }
 .user-box {
-  display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
-  background: rgba(60,50,69,0.06); border-radius: 10px; padding: 0.6rem 0.7rem;
-  margin-bottom: 1.1rem; font-size: 0.76rem;
+  display: flex; align-items: center; gap: 0.7rem;
+  background: rgba(60,50,69,0.06); border-radius: 999px; padding: 0.45rem 0.5rem 0.45rem 0.9rem;
+  font-size: 0.76rem; flex-shrink: 0; max-width: 240px;
 }
 .user-box-info { overflow: hidden; }
 .user-box-name { font-weight: 600; color: var(--navy-900); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .user-box-dinas { opacity: 0.7; color: var(--gray-600); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .user-box-logout {
-  flex-shrink: 0; border: 1px solid rgba(60,50,69,0.25); background: var(--white); color: var(--navy-900);
-  font-size: 0.7rem; font-weight: 600; padding: 0.35rem 0.55rem; border-radius: 7px; cursor: pointer;
+  flex-shrink: 0; border: none; background: var(--white); color: var(--navy-900);
+  font-size: 0.7rem; font-weight: 600; padding: 0.4rem 0.75rem; border-radius: 999px; cursor: pointer;
+  box-shadow: var(--shadow);
   transition: background 0.18s var(--ease);
 }
-.user-box-logout:hover { background: rgba(60,50,69,0.1); }
+.user-box-logout:hover { background: var(--blue-100); }
+@media (max-width: 700px) {
+  .user-box { order: 4; width: 100%; max-width: 100%; }
+}
 
 </style>
 </head>
@@ -2033,6 +2037,14 @@ function render(keepScroll) {
           <div class="main-topbar-greet">Halo, ${greetName.split(" ")[0]}!</div>
           <div class="main-topbar-search"><i class="ti ti-search"></i><span>Cari formulir…</span></div>
           <div class="main-topbar-icons"><i class="ti ti-bell"></i><i class="ti ti-dots-vertical"></i></div>
+          ${currentProfile ? `
+          <div class="user-box">
+            <div class="user-box-info">
+              <div class="user-box-name">${currentProfile.nama || currentSession.user.email}</div>
+              <div class="user-box-dinas">${(currentProfile.dinas && currentProfile.dinas.nama) || ""}</div>
+            </div>
+            <button type="button" class="user-box-logout" onclick="doAuthLogout()">Keluar</button>
+          </div>` : ""}
         </div>
         <div class="content-inner trans-${dir}" id="content-inner"></div>
         ${renderNav(step)}
@@ -2094,14 +2106,6 @@ function renderSidebar(currentStep) {
           <div class="brand-sub">Pemerintah Daerah Kabupaten Malaka</div>
         </div>
       </div>
-      ${currentProfile ? `
-      <div class="user-box">
-        <div class="user-box-info">
-          <div class="user-box-name">${currentProfile.nama || currentSession.user.email}</div>
-          <div class="user-box-dinas">${(currentProfile.dinas && currentProfile.dinas.nama) || ""}</div>
-        </div>
-        <button type="button" class="user-box-logout" onclick="doAuthLogout()">Keluar</button>
-      </div>` : ""}
       <div class="unit-switch">
         <button type="button" class="${activeUnit === "UP" ? "active" : ""}" data-unit="UP"><img class="unit-icon-3d" src="${icon3d("3845783")}" alt="" aria-hidden="true" /> Unit Pengolah</button>
         <button type="button" class="${activeUnit === "UK" ? "active" : ""}" data-unit="UK"><img class="unit-icon-3d" src="${icon3d("3845870")}" alt="" aria-hidden="true" /> Unit Kearsipan</button>
