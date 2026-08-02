@@ -346,18 +346,18 @@
 
     <div class="nav-group-label">Menu</div>
     <ul class="nav-list">
-      <li class="nav-item active"><a href="#top" style="display:flex;align-items:center;gap:11px;color:inherit;">
+      <li><div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard')">
         <svg class="icon" viewBox="0 0 24 24"><path d="M3 10.5 12 4l9 6.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
-        Dashboard</a></li>
-      <li class="nav-item"><a href="#panel-dinas" style="display:flex;align-items:center;gap:11px;color:inherit;">
+        Dashboard</div></li>
+      <li><div class="nav-item" data-page="dinas" onclick="showPage('dinas')">
         <svg class="icon" viewBox="0 0 24 24"><path d="M4 21V6l8-3 8 3v15"/><path d="M9 21v-6h6v6"/><path d="M9 10h.01M15 10h.01M9 14h.01M15 14h.01"/></svg>
-        Dinas / Instansi</a></li>
-      <li class="nav-item"><a href="#panel-undangan" style="display:flex;align-items:center;gap:11px;color:inherit;">
+        Dinas / Instansi</div></li>
+      <li><div class="nav-item" data-page="undangan" onclick="showPage('undangan')">
         <svg class="icon" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M10.5 12.5 20 3M17 3h3v3M15 8l2 2"/></svg>
-        Kode Undangan</a></li>
-      <li class="nav-item"><a href="#panel-akun" style="display:flex;align-items:center;gap:11px;color:inherit;">
+        Kode Undangan</div></li>
+      <li><div class="nav-item" data-page="akun" onclick="showPage('akun')">
         <svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16.5 6a3.5 3.5 0 0 1 0 7"/><path d="M20 20a6 6 0 0 0-3.8-5.6"/></svg>
-        Akun Terdaftar</a></li>
+        Akun Terdaftar</div></li>
     </ul>
 
     <div class="sidebar-foot">
@@ -406,48 +406,63 @@
     <main class="content" id="top">
       <div class="page-head">
         <div class="page-title">
-          <span class="page-title-icon">
+          <span class="page-title-icon" id="pageIcon">
             <svg class="icon" viewBox="0 0 24 24" style="width:17px;height:17px;stroke:#fff;"><path d="M3 10.5 12 4l9 6.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
           </span>
-          <h1>Dashboard</h1>
+          <h1 id="pageTitleText">Dashboard</h1>
         </div>
         <div class="page-overview">
-          Ringkasan sistem
+          <span id="pageOverviewText">Ringkasan sistem</span>
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>
         </div>
       </div>
 
-      <!-- STAT CARDS -->
-      <div class="stat-strip">
-        <div class="stat-card">
-          <div class="stat-top">
-            <span class="stat-name">Dinas Terdaftar</span>
-            <span class="stat-icon"><svg class="icon" viewBox="0 0 24 24" style="stroke:#fff;"><path d="M4 21V6l8-3 8 3v15"/><path d="M9 21v-6h6v6"/></svg></span>
-          </div>
-          <div class="stat-value" id="statDinas">—</div>
-          <div class="stat-foot">Instansi aktif dalam sistem</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-top">
-            <span class="stat-name">Kode Belum Dipakai</span>
-            <span class="stat-icon"><svg class="icon" viewBox="0 0 24 24" style="stroke:#fff;"><circle cx="8" cy="15" r="4"/><path d="M10.5 12.5 20 3M17 3h3v3"/></svg></span>
-          </div>
-          <div class="stat-value" id="statKodeAktif">—</div>
-          <div class="stat-foot">Siap dibagikan ke dinas</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-top">
-            <span class="stat-name">Akun Terdaftar</span>
-            <span class="stat-icon"><svg class="icon" viewBox="0 0 24 24" style="stroke:#fff;"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/></svg></span>
-          </div>
-          <div class="stat-value" id="statAkun">—</div>
-          <div class="stat-foot">Pengguna aktif terverifikasi</div>
-        </div>
-      </div>
+      <!-- ============== HALAMAN: DASHBOARD ============== -->
+      <section class="page-view" data-page="dashboard" id="page-dashboard">
 
-      <!-- FORM + DONUT -->
-      <div class="row-2">
-        <div class="panel" id="panel-dinas">
+        <div class="stat-strip">
+          <div class="stat-card">
+            <div class="stat-top">
+              <span class="stat-name">Dinas Terdaftar</span>
+              <span class="stat-icon"><svg class="icon" viewBox="0 0 24 24" style="stroke:#fff;"><path d="M4 21V6l8-3 8 3v15"/><path d="M9 21v-6h6v6"/></svg></span>
+            </div>
+            <div class="stat-value" id="statDinas">—</div>
+            <div class="stat-foot">Instansi aktif dalam sistem</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-top">
+              <span class="stat-name">Kode Belum Dipakai</span>
+              <span class="stat-icon"><svg class="icon" viewBox="0 0 24 24" style="stroke:#fff;"><circle cx="8" cy="15" r="4"/><path d="M10.5 12.5 20 3M17 3h3v3"/></svg></span>
+            </div>
+            <div class="stat-value" id="statKodeAktif">—</div>
+            <div class="stat-foot">Siap dibagikan ke dinas</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-top">
+              <span class="stat-name">Akun Terdaftar</span>
+              <span class="stat-icon"><svg class="icon" viewBox="0 0 24 24" style="stroke:#fff;"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/></svg></span>
+            </div>
+            <div class="stat-value" id="statAkun">—</div>
+            <div class="stat-foot">Pengguna aktif terverifikasi</div>
+          </div>
+        </div>
+
+        <section class="panel">
+          <div class="panel-eyebrow">Buku Register</div>
+          <div class="panel-head"><h2>Aktivitas Terbaru</h2></div>
+          <p class="panel-note">5 kode undangan yang paling baru dibuat. Buka menu <strong>Kode Undangan</strong> untuk melihat daftar lengkap.</p>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Dinas</th><th>Kode</th><th>Status</th><th>Dibuat</th></tr></thead>
+              <tbody id="recentActivityTable"><tr><td colspan="4">Memuat…</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <!-- ============== HALAMAN: DINAS / INSTANSI ============== -->
+      <section class="page-view hidden" data-page="dinas" id="page-dinas">
+        <section class="panel">
           <div class="panel-eyebrow">Registrasi Instansi</div>
           <div class="panel-head"><h2>Tambah Dinas</h2></div>
           <div class="row">
@@ -460,8 +475,23 @@
             </div>
           </div>
           <div class="msg" id="dinasMsg"></div>
+        </section>
 
-          <hr class="panel-sep" id="panel-undangan">
+        <section class="panel">
+          <div class="panel-eyebrow">Buku Register</div>
+          <div class="panel-head"><h2>Daftar Dinas</h2></div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Nama Dinas</th><th>Kode Dibuat</th><th>Akun Terdaftar</th><th>Dibuat</th></tr></thead>
+              <tbody id="dinasTable"><tr><td colspan="4">Memuat…</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <!-- ============== HALAMAN: KODE UNDANGAN ============== -->
+      <section class="page-view hidden" data-page="undangan" id="page-undangan">
+        <section class="panel">
           <div class="panel-eyebrow">Akses Masuk</div>
           <div class="panel-head"><h2>Buat Kode Undangan Login</h2></div>
           <p class="panel-note">
@@ -479,42 +509,46 @@
             </div>
           </div>
           <div class="msg" id="inviteMsg"></div>
-        </div>
+        </section>
 
-        <div class="panel">
-          <div class="panel-head"><h2>Distribusi Akun</h2></div>
-          <div class="donut-wrap">
-            <div class="donut" id="roleDonut">
-              <div class="donut-hole">
-                <span class="n" id="donutTotal">0</span>
-                <span class="l">Akun</span>
-              </div>
-            </div>
-            <div class="legend" id="roleLegend"></div>
+        <section class="panel">
+          <div class="panel-eyebrow">Buku Register</div>
+          <div class="panel-head"><h2>Daftar Dinas &amp; Kode Undangan</h2></div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Dinas</th><th>Kode</th><th>Status</th><th>Dibuat</th><th>Aksi</th></tr></thead>
+              <tbody id="inviteTable"><tr><td colspan="5">Memuat…</td></tr></tbody>
+            </table>
           </div>
-        </div>
-      </div>
-
-      <!-- TABLES -->
-      <section class="panel" id="panel-dinas-table">
-        <div class="panel-eyebrow">Buku Register</div>
-        <div class="panel-head"><h2>Daftar Dinas &amp; Kode Undangan</h2></div>
-        <div class="table-scroll">
-          <table>
-            <thead><tr><th>Dinas</th><th>Kode</th><th>Status</th><th>Dibuat</th><th>Aksi</th></tr></thead>
-            <tbody id="inviteTable"><tr><td colspan="5">Memuat…</td></tr></tbody>
-          </table>
-        </div>
+        </section>
       </section>
 
-      <section class="panel" id="panel-akun">
-        <div class="panel-eyebrow">Buku Register</div>
-        <div class="panel-head"><h2>Akun Terdaftar</h2></div>
-        <div class="table-scroll">
-          <table>
-            <thead><tr><th>Nama</th><th>Dinas</th><th>Peran</th><th>Terdaftar</th></tr></thead>
-            <tbody id="userTable"><tr><td colspan="4">Memuat…</td></tr></tbody>
-          </table>
+      <!-- ============== HALAMAN: AKUN TERDAFTAR ============== -->
+      <section class="page-view hidden" data-page="akun" id="page-akun">
+        <div class="row-2">
+          <section class="panel">
+            <div class="panel-eyebrow">Buku Register</div>
+            <div class="panel-head"><h2>Akun Terdaftar</h2></div>
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>Nama</th><th>Dinas</th><th>Peran</th><th>Terdaftar</th></tr></thead>
+                <tbody id="userTable"><tr><td colspan="4">Memuat…</td></tr></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h2>Distribusi Peran</h2></div>
+            <div class="donut-wrap">
+              <div class="donut" id="roleDonut">
+                <div class="donut-hole">
+                  <span class="n" id="donutTotal">0</span>
+                  <span class="l">Akun</span>
+                </div>
+              </div>
+              <div class="legend" id="roleLegend"></div>
+            </div>
+          </section>
         </div>
       </section>
 
@@ -539,7 +573,49 @@ if (window.supabase && SUPABASE_URL.indexOf("YOUR-PROJECT") === -1) {
 }
 
 let dinasList = [];
+let invitesData = [];
+let usersData = [];
 const ROLE_COLORS = ["#7C5CFC", "#3D7DFB", "#17B79A", "#FF5D82", "#F5A623"];
+
+/* ---------- Navigasi antar halaman ---------- */
+const PAGES = {
+  dashboard: {
+    title: "Dashboard",
+    overview: "Ringkasan sistem",
+    icon: '<svg class="icon" viewBox="0 0 24 24" style="width:17px;height:17px;stroke:#fff;"><path d="M3 10.5 12 4l9 6.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>',
+  },
+  dinas: {
+    title: "Dinas / Instansi",
+    overview: "Kelola daftar instansi",
+    icon: '<svg class="icon" viewBox="0 0 24 24" style="width:17px;height:17px;stroke:#fff;"><path d="M4 21V6l8-3 8 3v15"/><path d="M9 21v-6h6v6"/></svg>',
+  },
+  undangan: {
+    title: "Kode Undangan",
+    overview: "Kelola akses masuk dinas",
+    icon: '<svg class="icon" viewBox="0 0 24 24" style="width:17px;height:17px;stroke:#fff;"><circle cx="8" cy="15" r="4"/><path d="M10.5 12.5 20 3M17 3h3v3M15 8l2 2"/></svg>',
+  },
+  akun: {
+    title: "Akun Terdaftar",
+    overview: "Semua akun pengguna",
+    icon: '<svg class="icon" viewBox="0 0 24 24" style="width:17px;height:17px;stroke:#fff;"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/></svg>',
+  },
+};
+
+function showPage(name) {
+  const meta = PAGES[name];
+  if (!meta) return;
+  document.querySelectorAll(".page-view").forEach((el) => {
+    el.classList.toggle("hidden", el.dataset.page !== name);
+  });
+  document.querySelectorAll(".nav-item[data-page]").forEach((el) => {
+    el.classList.toggle("active", el.dataset.page === name);
+  });
+  document.getElementById("pageTitleText").textContent = meta.title;
+  document.getElementById("pageOverviewText").textContent = meta.overview;
+  document.getElementById("pageIcon").innerHTML = meta.icon;
+  toggleSidebar(false);
+  document.querySelector(".content").scrollTo({ top: 0, behavior: "auto" });
+}
 
 /* ---------- UI helpers (sidebar & dropdown) ---------- */
 function toggleSidebar(force) {
@@ -598,6 +674,7 @@ async function checkSessionAndRole() {
   await loadDinas();
   await loadInvites();
   await loadUsers();
+  renderDinasTable();
 }
 
 /* ---------- Dinas ---------- */
@@ -619,6 +696,7 @@ async function addDinas() {
   document.getElementById("dinasNama").value = "";
   await loadDinas();
   await loadInvites();
+  renderDinasTable();
 }
 
 /* ---------- Undangan ---------- */
@@ -636,17 +714,20 @@ async function createInvite() {
     ? `<span class="err">${error.message}</span>`
     : `<span class="ok">Kode dibuat: <code class="inv">${code}</code> — bagikan kode ini ke dinas terkait.</span>`;
   await loadInvites();
+  renderDinasTable();
 }
 
 async function loadInvites() {
   const { data, error } = await sb
     .from("invites")
-    .select("code, used, created_at, dinas:dinas_id(nama)")
+    .select("code, used, created_at, dinas_id, dinas:dinas_id(nama)")
     .order("created_at", { ascending: false });
   const tbody = document.getElementById("inviteTable");
+  invitesData = data || [];
   if (error || !data || !data.length) {
     tbody.innerHTML = "<tr><td colspan='5'>Belum ada kode undangan.</td></tr>";
     document.getElementById("statKodeAktif").textContent = "0";
+    renderRecentActivity([]);
     return;
   }
   tbody.innerHTML = data.map((i) => `
@@ -661,6 +742,44 @@ async function loadInvites() {
       </td>
     </tr>`).join("");
   document.getElementById("statKodeAktif").textContent = data.filter((i) => !i.used).length;
+  renderRecentActivity(data);
+}
+
+function renderRecentActivity(data) {
+  const tbody = document.getElementById("recentActivityTable");
+  if (!tbody) return;
+  if (!data.length) {
+    tbody.innerHTML = "<tr><td colspan='4'>Belum ada aktivitas.</td></tr>";
+    return;
+  }
+  tbody.innerHTML = data.slice(0, 5).map((i) => `
+    <tr>
+      <td>${i.dinas ? i.dinas.nama : "-"}</td>
+      <td><code class="inv">${i.code}</code></td>
+      <td><span class="badge ${i.used ? "used" : ""}">${i.used ? "Terpakai" : "Belum dipakai"}</span></td>
+      <td>${new Date(i.created_at).toLocaleString("id-ID")}</td>
+    </tr>`).join("");
+}
+
+function renderDinasTable() {
+  const tbody = document.getElementById("dinasTable");
+  if (!tbody) return;
+  if (!dinasList.length) {
+    tbody.innerHTML = "<tr><td colspan='4'>Belum ada dinas terdaftar.</td></tr>";
+    return;
+  }
+  tbody.innerHTML = dinasList.map((d) => {
+    const kodeCount = invitesData.filter((i) => i.dinas_id === d.id).length;
+    const akunCount = usersData.filter((u) => u.dinas_id === d.id).length;
+    const dibuat = d.created_at ? new Date(d.created_at).toLocaleString("id-ID") : "-";
+    return `
+      <tr>
+        <td>${d.nama}</td>
+        <td>${kodeCount}</td>
+        <td>${akunCount}</td>
+        <td>${dibuat}</td>
+      </tr>`;
+  }).join("");
 }
 
 async function resetInvite(code) {
@@ -675,15 +794,17 @@ async function deleteInvite(code) {
   const { error } = await sb.from("invites").delete().eq("code", code);
   if (error) { alert(error.message); return; }
   await loadInvites();
+  renderDinasTable();
 }
 
 /* ---------- Akun ---------- */
 async function loadUsers() {
   const { data, error } = await sb
     .from("profiles")
-    .select("nama, role, created_at, dinas:dinas_id(nama)")
+    .select("nama, role, created_at, dinas_id, dinas:dinas_id(nama)")
     .order("created_at", { ascending: false });
   const tbody = document.getElementById("userTable");
+  usersData = data || [];
   if (error || !data || !data.length) {
     tbody.innerHTML = "<tr><td colspan='4'>Belum ada akun terdaftar.</td></tr>";
     document.getElementById("statAkun").textContent = "0";
