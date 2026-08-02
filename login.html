@@ -95,7 +95,7 @@ body {
 /* ---------- LAYOUT ---------- */
 .layout {
   display: flex;
-  min-height: calc(100vh - 4rem);
+  height: calc(100vh - 4rem);
   max-width: 1500px;
   margin: 0 auto;
   background: var(--lav-shell);
@@ -107,19 +107,22 @@ body {
 .sidebar {
   width: 300px;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   background:
     radial-gradient(650px 320px at 100% 0%, rgba(212,169,79,0.14), transparent 60%),
     radial-gradient(500px 260px at 0% 100%, rgba(79,179,171,0.14), transparent 60%),
     var(--lav-sidebar);
   color: var(--gray-900);
-  padding: 1.5rem 1.25rem 2rem;
-  position: sticky;
-  top: 0;
-  align-self: flex-start;
-  height: calc(100vh - 4rem);
-  overflow-y: auto;
+  padding: 1.5rem 1.25rem 1.5rem;
   border-right: 1px solid rgba(60,50,69,0.08);
 }
+.sidebar-header { flex-shrink: 0; }
+.sidebar-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+
+.content { flex: 1; display: flex; flex-direction: column; height: 100%; min-width: 0; padding: 2.5rem 3rem 3rem; max-width: 980px; }
+.content-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
 
 .brand { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1.1rem; border-bottom: 1px solid rgba(60,50,69,0.12); }
 .brand-emblem {
@@ -210,9 +213,9 @@ body {
   padding-right: 1.5rem;
 }
 
-.content { flex: 1; padding: 2.5rem 3rem 3rem; max-width: 980px; }
 .main-topbar {
   display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.75rem; justify-content: space-between;
+  flex-shrink: 0;
 }
 .topbar-progress-box {
   display: flex; align-items: center; gap: 0.9rem;
@@ -602,9 +605,12 @@ h3 { font-family: var(--font-display); color: var(--navy-800); font-size: 1.05re
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 900px) {
   body { padding: 0.75rem; }
-  .layout { flex-direction: column; border-radius: 20px; min-height: auto; }
-  .sidebar { width: 100%; height: auto; position: relative; border-radius: 0; }
-  .content { padding: 1.5rem; }
+  .layout { flex-direction: column; border-radius: 20px; height: auto; }
+  .sidebar { width: 100%; height: auto; border-radius: 0; }
+  .sidebar-scroll { overflow-y: visible; }
+  .content { height: auto; padding: 1.5rem; }
+  .content-scroll { overflow-y: visible; }
+  .main-topbar { flex-wrap: wrap; }
   .grid-2, .grid-3 { grid-template-columns: 1fr; }
 }
 
@@ -2017,7 +2023,8 @@ let __lastStepIndex = 0;
 let __lastWasSameStep = true;
 
 function render(keepScroll) {
-  const prevScrollY = keepScroll ? window.scrollY : 0;
+  const prevScrollPane = document.getElementById("content-scroll");
+  const prevScrollY = keepScroll && prevScrollPane ? prevScrollPane.scrollTop : 0;
   saveDraft();
   if (state.submitted && state.result) return renderResult();
 
@@ -2058,8 +2065,10 @@ function render(keepScroll) {
             <button type="button" class="user-box-logout" onclick="doAuthLogout()">Keluar</button>
           </div>` : ""}
         </div>
-        <div class="content-inner trans-${dir}" id="content-inner"></div>
-        ${renderNav(step)}
+        <div class="content-scroll" id="content-scroll">
+          <div class="content-inner trans-${dir}" id="content-inner"></div>
+          ${renderNav(step)}
+        </div>
       </main>
     </div>
   `;
@@ -2074,7 +2083,8 @@ function render(keepScroll) {
   // Saat berpindah langkah, mulai dari atas. Saat hanya menjawab satu
   // pertanyaan Ya/Tidak di tengah formulir (lihat attachHandlers), posisi
   // scroll dipertahankan agar tampilan tidak melompat ke atas.
-  window.scrollTo(0, keepScroll ? prevScrollY : 0);
+  const scrollPane = document.getElementById("content-scroll");
+  if (scrollPane) scrollPane.scrollTop = keepScroll ? prevScrollY : 0;
 }
 
 function renderSidebar(currentStep) {
@@ -2111,30 +2121,34 @@ function renderSidebar(currentStep) {
   }
   return `
     <aside class="sidebar">
-      <div class="brand">
-        <img class="brand-emblem" src="${LOGO_URL}" alt="Archive logo" />
-        <div>
-          <div class="brand-title">AUDIT SISTEM KEARSIPAN INTERNAL</div>
-          <div class="brand-sub">Pemerintah Daerah Kabupaten Malaka</div>
+      <div class="sidebar-header">
+        <div class="brand">
+          <img class="brand-emblem" src="${LOGO_URL}" alt="Archive logo" />
+          <div>
+            <div class="brand-title">AUDIT SISTEM KEARSIPAN INTERNAL</div>
+            <div class="brand-sub">Pemerintah Daerah Kabupaten Malaka</div>
+          </div>
         </div>
       </div>
-      <div class="unit-switch">
-        <button type="button" class="${activeUnit === "UP" ? "active" : ""}" data-unit="UP"><img class="unit-icon-3d" src="${icon3d("3845783")}" alt="" aria-hidden="true" /> Unit Pengolah</button>
-        <button type="button" class="${activeUnit === "UK" ? "active" : ""}" data-unit="UK"><img class="unit-icon-3d" src="${icon3d("3845870")}" alt="" aria-hidden="true" /> Unit Kearsipan</button>
+      <div class="sidebar-scroll">
+        <div class="unit-switch">
+          <button type="button" class="${activeUnit === "UP" ? "active" : ""}" data-unit="UP"><img class="unit-icon-3d" src="${icon3d("3845783")}" alt="" aria-hidden="true" /> Unit Pengolah</button>
+          <button type="button" class="${activeUnit === "UK" ? "active" : ""}" data-unit="UK"><img class="unit-icon-3d" src="${icon3d("3845870")}" alt="" aria-hidden="true" /> Unit Kearsipan</button>
+        </div>
+        <nav>
+          <ul class="step-list">
+            ${item("info", "Data Instansi", "3845895")}
+          </ul>
+          <div class="nav-group-title">${groupTitle}</div>
+          <ul class="step-list">
+            ${item(dataStepId, dataStepLabel, "3845758")}
+            ${forms.map((f) => item(f.id, f.title, formIconFor(f.title))).join("")}
+          </ul>
+          <ul class="step-list">
+            ${item("review", "Tinjau &amp; Kirim", "3845692")}
+          </ul>
+        </nav>
       </div>
-      <nav>
-        <ul class="step-list">
-          ${item("info", "Data Instansi", "3845895")}
-        </ul>
-        <div class="nav-group-title">${groupTitle}</div>
-        <ul class="step-list">
-          ${item(dataStepId, dataStepLabel, "3845758")}
-          ${forms.map((f) => item(f.id, f.title, formIconFor(f.title))).join("")}
-        </ul>
-        <ul class="step-list">
-          ${item("review", "Tinjau &amp; Kirim", "3845692")}
-        </ul>
-      </nav>
     </aside>
   `;
 }
