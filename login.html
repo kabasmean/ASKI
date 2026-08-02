@@ -135,6 +135,7 @@ body {
   transition: background 0.18s var(--ease), color 0.18s var(--ease);
 }
 .unit-switch button i { font-size: 1rem; }
+.unit-icon-3d { width: 20px; height: 20px; object-fit: contain; vertical-align: -5px; margin-right: 2px; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25)); }
 .unit-switch button:hover { background: rgba(255,255,255,0.1); color: #fff; }
 .unit-switch button.active {
   background: var(--white);
@@ -172,7 +173,11 @@ body {
 .step-list li i.step-icon { font-size: 1.05rem; flex-shrink: 0; }
 .step-list li .done-icon { font-size: 1.05rem; flex-shrink: 0; color: var(--teal-light); }
 .step-list li.active .done-icon { color: var(--green); }
+.step-icon-3d { width: 26px; height: 26px; object-fit: contain; flex-shrink: 0; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
+.done-icon-3d { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
 .step-list li:hover { background: rgba(255,255,255,0.1); transform: translateX(3px); }
+.step-list li.locked { opacity: 0.45; }
+.step-list li.locked:hover { background: transparent; transform: none; }
 .step-list li.active {
   background: var(--white);
   color: #000000; font-weight: 600; opacity: 1;
@@ -1902,6 +1907,49 @@ function computeScores() {
   return result;
 }
 
+// Menentukan apakah satu langkah/aspek sudah lengkap diisi. Dipakai untuk
+// mengunci navigasi berurutan: pengguna tidak bisa lompat ke aspek
+// berikutnya sebelum aspek yang sedang terbuka selesai diisi.
+function isStepComplete(stepId) {
+  const i = state.info;
+  if (stepId === "info") {
+    const unitVal = activeUnit === "UP" ? i.unitPengolah : i.unitKearsipan;
+    return !!(i.namaInstansi && i.tanggalAudit && unitVal && i.alamat);
+  }
+  if (stepId === "data_up") {
+    return !!(i.duUpNamaUnit && i.duUpAlamat && i.duUpNamaPJ && i.duUpJmlArsiparis &&
+      i.duUpJmlPengelola && i.duUpVolumeAktif && i.duUpJmlDaftarAktif &&
+      i.duUpNarahubungNama && i.duUpNarahubungHp);
+  }
+  if (stepId === "data_uk") {
+    return !!(i.duUkNamaUnit && i.duUkAlamat && i.duUkNamaPJ && i.duUkJmlArsiparis &&
+      i.duUkJmlPengelola && i.duUkVolumeInaktif && i.duUkJmlDaftarInaktif &&
+      i.duUkNarahubungNama && i.duUkNarahubungHp);
+  }
+  if (stepId === "review") return true;
+  const form = ASKI_FORMS.find((f) => f.id === stepId);
+  if (!form) return true;
+  let complete = true;
+  form.groups.forEach((g) => g.questions.forEach((q) => {
+    if (q.type === "info" || q.type === "checklist" || q.type === "number" || q.type === "subheading" || isSkipped(q)) return;
+    if (q.linkFormId || q.linkQid) return;
+    const v = state.answers[q.id];
+    if (v === undefined || v === "") complete = false;
+  }));
+  return complete;
+}
+
+// Indeks langkah terjauh yang boleh diakses: langkah pertama yang belum
+// lengkap adalah batasnya (masih boleh dibuka untuk dilengkapi), tapi
+// langkah setelahnya terkunci sampai langkah tersebut selesai.
+function maxReachableStepIndex() {
+  const steps = getSteps(activeUnit);
+  for (let idx = 0; idx < steps.length; idx++) {
+    if (!isStepComplete(steps[idx])) return idx;
+  }
+  return steps.length - 1;
+}
+
 function totalProgress() {
   let total = 0, answered = 0;
   ASKI_FORMS.filter((f) => f.unit === activeUnit).forEach((form) => form.groups.forEach((g) => g.questions.forEach((q) => {
@@ -1963,23 +2011,28 @@ function renderSidebar(currentStep) {
   const groupTitle = activeUnit === "UP" ? "A. Unit Pengolah" : "B. Unit Kearsipan";
   const circumference = 113.1;
   const offset = (circumference - (circumference * prog.pct) / 100).toFixed(1);
+  // Slug ikon icons8 3D Fluency — https://icons8.com/icons/set/popular--style-3d-fluency
   function formIconFor(title) {
-    if (title.startsWith("Penciptaan")) return { icon: "ti-file-plus", color: "var(--gold-light)" };
-    if (title.startsWith("Penggunaan")) return { icon: "ti-file-search", color: "var(--teal-light)" };
-    if (title.startsWith("Pemeliharaan")) return { icon: "ti-tool", color: "var(--gold-light)" };
-    if (title.startsWith("Penyusutan")) return { icon: "ti-recycle", color: "var(--teal-light)" };
-    if (title.startsWith("Sumber Daya Manusia")) return { icon: "ti-users", color: "var(--gold-light)" };
-    if (title.startsWith("Prasarana")) return { icon: "ti-building-warehouse", color: "var(--teal-light)" };
-    return { icon: "ti-clipboard-text", color: "var(--teal-light)" };
+    if (title.startsWith("Penciptaan")) return "product-documents";
+    if (title.startsWith("Penggunaan")) return "documents";
+    if (title.startsWith("Pemeliharaan")) return "toolbox";
+    if (title.startsWith("Penyusutan")) return "recycle";
+    if (title.startsWith("Sumber Daya Manusia")) return "user-group-man-man--v2";
+    if (title.startsWith("Prasarana")) return "briefcase";
+    return "documents";
   }
-  function item(stepId, label, iconClass, iconColor) {
+  const icon3d = (slug) => `https://img.icons8.com/3d-fluency/100/${slug}.png`;
+  const maxReachable = maxReachableStepIndex();
+  function item(stepId, label, iconSlug) {
     const active = stepId === currentStep ? "active" : "";
     const idx = steps.indexOf(stepId);
-    const done = idx < state.step ? "done" : "";
-    return `<li class="${active} ${done}" data-step="${stepId}">
-      <i class="ti ${iconClass} step-icon" style="color:${iconColor}" aria-hidden="true"></i>
+    const done = isStepComplete(stepId) && stepId !== "review" ? "done" : "";
+    const locked = idx > maxReachable ? "locked" : "";
+    return `<li class="${active} ${done} ${locked}" data-step="${stepId}">
+      <img class="step-icon-3d" src="${icon3d(iconSlug)}" alt="" aria-hidden="true" />
       <span style="flex:1">${label}</span>
-      ${done ? '<i class="ti ti-circle-check done-icon" aria-hidden="true"></i>' : ""}
+      ${done ? `<img class="done-icon-3d" src="${icon3d("check-mark")}" alt="" aria-hidden="true" />` : ""}
+      ${locked ? `<img class="done-icon-3d" src="${icon3d("lock")}" alt="" aria-hidden="true" style="opacity:0.55" />` : ""}
     </li>`;
   }
   return `
@@ -2000,8 +2053,8 @@ function renderSidebar(currentStep) {
         <button type="button" class="user-box-logout" onclick="doAuthLogout()">Keluar</button>
       </div>` : ""}
       <div class="unit-switch">
-        <button type="button" class="${activeUnit === "UP" ? "active" : ""}" data-unit="UP"><i class="ti ti-folder" aria-hidden="true"></i> Unit Pengolah</button>
-        <button type="button" class="${activeUnit === "UK" ? "active" : ""}" data-unit="UK"><i class="ti ti-archive" aria-hidden="true"></i> Unit Kearsipan</button>
+        <button type="button" class="${activeUnit === "UP" ? "active" : ""}" data-unit="UP"><img class="unit-icon-3d" src="${icon3d("folder-invoices--v2")}" alt="" aria-hidden="true" /> Unit Pengolah</button>
+        <button type="button" class="${activeUnit === "UK" ? "active" : ""}" data-unit="UK"><img class="unit-icon-3d" src="${icon3d("archive")}" alt="" aria-hidden="true" /> Unit Kearsipan</button>
       </div>
       <div class="progress-box">
         <div class="progress-circle">
@@ -2015,15 +2068,15 @@ function renderSidebar(currentStep) {
       </div>
       <nav>
         <ul class="step-list">
-          ${item("info", "Data Instansi", "ti-file-text", "var(--gold-light)")}
+          ${item("info", "Data Instansi", "document")}
         </ul>
         <div class="nav-group-title">${groupTitle}</div>
         <ul class="step-list">
-          ${item(dataStepId, dataStepLabel, "ti-folder-open", "var(--gold-light)")}
-          ${forms.map((f) => { const ic = formIconFor(f.title); return item(f.id, f.title, ic.icon, ic.color); }).join("")}
+          ${item(dataStepId, dataStepLabel, "opened-folder")}
+          ${forms.map((f) => item(f.id, f.title, formIconFor(f.title))).join("")}
         </ul>
         <ul class="step-list">
-          ${item("review", "Tinjau &amp; Kirim", "ti-send", "var(--teal-light)")}
+          ${item("review", "Tinjau &amp; Kirim", "paper-plane")}
         </ul>
       </nav>
     </aside>
@@ -2070,11 +2123,25 @@ function attachHandlers(step) {
   const next = document.getElementById("btn-next");
   const submit = document.getElementById("btn-submit");
   if (prev) prev.onclick = () => { if (state.step > 0) { state.step--; render(); } };
-  if (next) next.onclick = () => { if (state.step < steps.length - 1) { state.step++; render(); } };
+  if (next) next.onclick = () => {
+    if (state.step >= steps.length - 1) return;
+    if (!isStepComplete(steps[state.step])) {
+      alert("Lengkapi dulu semua isian pada aspek ini sebelum lanjut ke aspek berikutnya.");
+      return;
+    }
+    state.step++; render();
+  };
   if (submit) submit.onclick = onSubmit;
 
   document.querySelectorAll("[data-step]").forEach((li) => {
-    li.onclick = () => { state.step = steps.indexOf(li.getAttribute("data-step")); render(); };
+    li.onclick = () => {
+      const targetIdx = steps.indexOf(li.getAttribute("data-step"));
+      if (targetIdx > maxReachableStepIndex()) {
+        alert("Selesaikan dulu aspek yang sedang terbuka sebelum melompat ke aspek berikutnya.");
+        return;
+      }
+      state.step = targetIdx; render();
+    };
   });
 
   document.querySelectorAll("[data-unit]").forEach((btn) => {
