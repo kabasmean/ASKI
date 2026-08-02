@@ -2011,17 +2011,17 @@ function renderSidebar(currentStep) {
   const groupTitle = activeUnit === "UP" ? "A. Unit Pengolah" : "B. Unit Kearsipan";
   const circumference = 113.1;
   const offset = (circumference - (circumference * prog.pct) / 100).toFixed(1);
-  // Slug ikon icons8 3D Fluency — https://icons8.com/icons/set/popular--style-3d-fluency
+  // Ikon dari Flaticon pack "Home Screen Apps" — https://www.flaticon.com/packs/home-screen-apps-21
   function formIconFor(title) {
-    if (title.startsWith("Penciptaan")) return "product-documents";
-    if (title.startsWith("Penggunaan")) return "documents";
-    if (title.startsWith("Pemeliharaan")) return "toolbox";
-    if (title.startsWith("Penyusutan")) return "recycle";
-    if (title.startsWith("Sumber Daya Manusia")) return "user-group-man-man--v2";
-    if (title.startsWith("Prasarana")) return "briefcase";
-    return "documents";
+    if (title.startsWith("Penciptaan")) return "3845869"; // Edition
+    if (title.startsWith("Penggunaan")) return "3845863"; // Search
+    if (title.startsWith("Pemeliharaan")) return "3845826"; // Settings
+    if (title.startsWith("Penyusutan")) return "3845738"; // Clock
+    if (title.startsWith("Sumber Daya Manusia")) return "3845847"; // Contacts
+    if (title.startsWith("Prasarana")) return "3845851"; // Bank
+    return "3845758"; // Notes (default)
   }
-  const icon3d = (slug) => `https://img.icons8.com/3d-fluency/100/${slug}.png`;
+  const icon3d = (id) => `https://cdn-icons-png.flaticon.com/128/3845/${id}.png`;
   const maxReachable = maxReachableStepIndex();
   function item(stepId, label, iconSlug) {
     const active = stepId === currentStep ? "active" : "";
@@ -2031,8 +2031,7 @@ function renderSidebar(currentStep) {
     return `<li class="${active} ${done} ${locked}" data-step="${stepId}">
       <img class="step-icon-3d" src="${icon3d(iconSlug)}" alt="" aria-hidden="true" />
       <span style="flex:1">${label}</span>
-      ${done ? `<img class="done-icon-3d" src="${icon3d("check-mark")}" alt="" aria-hidden="true" />` : ""}
-      ${locked ? `<img class="done-icon-3d" src="${icon3d("lock")}" alt="" aria-hidden="true" style="opacity:0.55" />` : ""}
+      ${done ? `<img class="done-icon-3d" src="${icon3d("3845853")}" alt="" aria-hidden="true" />` : ""}
     </li>`;
   }
   return `
@@ -2053,8 +2052,8 @@ function renderSidebar(currentStep) {
         <button type="button" class="user-box-logout" onclick="doAuthLogout()">Keluar</button>
       </div>` : ""}
       <div class="unit-switch">
-        <button type="button" class="${activeUnit === "UP" ? "active" : ""}" data-unit="UP"><img class="unit-icon-3d" src="${icon3d("folder-invoices--v2")}" alt="" aria-hidden="true" /> Unit Pengolah</button>
-        <button type="button" class="${activeUnit === "UK" ? "active" : ""}" data-unit="UK"><img class="unit-icon-3d" src="${icon3d("archive")}" alt="" aria-hidden="true" /> Unit Kearsipan</button>
+        <button type="button" class="${activeUnit === "UP" ? "active" : ""}" data-unit="UP"><img class="unit-icon-3d" src="${icon3d("3845783")}" alt="" aria-hidden="true" /> Unit Pengolah</button>
+        <button type="button" class="${activeUnit === "UK" ? "active" : ""}" data-unit="UK"><img class="unit-icon-3d" src="${icon3d("3845870")}" alt="" aria-hidden="true" /> Unit Kearsipan</button>
       </div>
       <div class="progress-box">
         <div class="progress-circle">
@@ -2068,15 +2067,15 @@ function renderSidebar(currentStep) {
       </div>
       <nav>
         <ul class="step-list">
-          ${item("info", "Data Instansi", "document")}
+          ${item("info", "Data Instansi", "3845895")}
         </ul>
         <div class="nav-group-title">${groupTitle}</div>
         <ul class="step-list">
-          ${item(dataStepId, dataStepLabel, "opened-folder")}
+          ${item(dataStepId, dataStepLabel, "3845758")}
           ${forms.map((f) => item(f.id, f.title, formIconFor(f.title))).join("")}
         </ul>
         <ul class="step-list">
-          ${item("review", "Tinjau &amp; Kirim", "paper-plane")}
+          ${item("review", "Tinjau &amp; Kirim", "3845692")}
         </ul>
       </nav>
     </aside>
