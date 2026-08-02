@@ -214,23 +214,27 @@ body {
 .main-topbar {
   display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.75rem;
 }
-.main-topbar-greet {
-  font-family: var(--font-display); font-weight: 700; font-size: 1.3rem;
-  color: var(--navy-900); white-space: nowrap; letter-spacing: 0.01em;
+.main-topbar-progress { flex: 1; max-width: 460px; }
+.main-topbar-progress-label {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem;
+  font-size: 0.82rem; color: var(--gray-600); margin-bottom: 0.4rem;
 }
-.main-topbar-search {
-  flex: 1; display: flex; align-items: center; gap: 0.6rem;
-  background: var(--white); border: 1px solid var(--gray-300);
-  border-radius: 999px; padding: 0.65rem 1.1rem; color: var(--gray-600);
-  font-size: 0.85rem; max-width: 340px; box-shadow: var(--shadow);
+.main-topbar-progress-label b {
+  font-family: var(--font-display); font-size: 1rem; color: var(--navy-900);
 }
-.main-topbar-search i { font-size: 1rem; opacity: 0.7; }
-.main-topbar-icons { display: flex; align-items: center; gap: 0.9rem; color: var(--navy-800); }
-.main-topbar-icons i { font-size: 1.25rem; cursor: pointer; opacity: 0.75; transition: opacity 0.18s var(--ease); }
-.main-topbar-icons i:hover { opacity: 1; }
+.main-topbar-progress-track {
+  height: 12px; border-radius: 999px; background: rgba(60,50,69,0.1);
+  overflow: hidden; box-shadow: inset 0 1px 2px rgba(60,50,69,0.08);
+}
+.main-topbar-progress-fill {
+  height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, var(--blue-500), var(--teal));
+  box-shadow: 0 0 8px rgba(201,123,156,0.5);
+  transition: width 0.5s var(--ease);
+}
 @media (max-width: 700px) {
   .main-topbar { flex-wrap: wrap; }
-  .main-topbar-search { order: 3; max-width: 100%; }
+  .main-topbar-progress { order: 1; max-width: 100%; width: 100%; }
 }
 .content-inner { margin-bottom: 2rem; }
 .content-inner.trans-same { animation: stepFadeIn 0.5s var(--ease) both; }
@@ -2028,15 +2032,21 @@ function render(keepScroll) {
     : state.step > __lastStepIndex ? "next" : state.step < __lastStepIndex ? "prev" : "same";
   __lastStepIndex = state.step;
 
-  const greetName = (currentProfile && (currentProfile.nama || (currentSession && currentSession.user && currentSession.user.email))) || "Auditor";
+  const prog = totalProgress();
   app.innerHTML = `
     <div class="layout">
       ${renderSidebar(step)}
       <main class="content">
         <div class="main-topbar">
-          <div class="main-topbar-greet">Halo, ${greetName.split(" ")[0]}!</div>
-          <div class="main-topbar-search"><i class="ti ti-search"></i><span>Cari formulir…</span></div>
-          <div class="main-topbar-icons"><i class="ti ti-bell"></i><i class="ti ti-dots-vertical"></i></div>
+          <div class="main-topbar-progress">
+            <div class="main-topbar-progress-label">
+              <span>Progres Pengisian Formulir</span>
+              <b>${prog.pct}%</b>
+            </div>
+            <div class="main-topbar-progress-track">
+              <div class="main-topbar-progress-fill" style="width:${prog.pct}%"></div>
+            </div>
+          </div>
           ${currentProfile ? `
           <div class="user-box">
             <div class="user-box-info">
