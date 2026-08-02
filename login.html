@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="icon" type="image/png" href="https://iili.io/CUHJTUF.png" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/iconfont/tabler-icons.min.css" rel="stylesheet" />
 <style>
 :root {
   --navy-900: #B30000;
@@ -130,8 +131,10 @@ body {
   flex: 1; border: none; background: transparent; color: rgba(255,255,255,0.75);
   font-family: var(--font-display); font-weight: 600; font-size: 0.72rem; letter-spacing: 0.02em;
   padding: 0.55rem 0.4rem; border-radius: 8px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
   transition: background 0.18s var(--ease), color 0.18s var(--ease);
 }
+.unit-switch button i { font-size: 1rem; }
 .unit-switch button:hover { background: rgba(255,255,255,0.1); color: #fff; }
 .unit-switch button.active {
   background: var(--white);
@@ -139,21 +142,20 @@ body {
 }
 .unit-switch-note { font-size: 0.68rem; opacity: 0.6; margin: -0.9rem 0 1.25rem; }
 
-.progress-box { margin-bottom: 1.5rem; }
-.progress-label { font-size: 0.78rem; margin-bottom: 0.35rem; opacity: 0.9; }
-.progress-bar { background: rgba(255,255,255,0.14); border-radius: 99px; height: 8px; overflow: hidden; }
-.progress-fill {
-  background: linear-gradient(90deg, var(--gold), var(--gold-light));
-  height: 100%; border-radius: 99px;
-  transition: width 0.5s var(--ease);
-  box-shadow: 0 0 10px rgba(232,198,90,0.5);
-  position: relative; overflow: hidden;
+.progress-box { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; }
+.progress-circle { position: relative; width: 66px; height: 66px; }
+.progress-circle svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.progress-circle-bg { fill: none; stroke: rgba(255,255,255,0.16); stroke-width: 4; }
+.progress-circle-fill {
+  fill: none; stroke: var(--gold-light); stroke-width: 4; stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s var(--ease);
+  filter: drop-shadow(0 0 4px rgba(232,198,90,0.55));
 }
-.progress-fill::after {
-  content: ""; position: absolute; inset: 0; width: 40%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.65), transparent);
-  animation: shimmer 2.2s ease-in-out infinite;
+.progress-circle-label {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; color: var(--white);
 }
+.progress-circle-caption { font-size: 0.72rem; opacity: 0.85; text-align: center; }
 
 .nav-group-title {
   font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
@@ -164,8 +166,12 @@ body {
 .step-list li {
   padding: 0.55rem 0.65rem; margin-bottom: 3px; border-radius: 9px;
   font-size: 0.85rem; cursor: pointer; opacity: 0.85; position: relative;
+  display: flex; align-items: center; gap: 9px;
   transition: background 0.18s var(--ease), transform 0.18s var(--ease), opacity 0.18s;
 }
+.step-list li i.step-icon { font-size: 1.05rem; flex-shrink: 0; }
+.step-list li .done-icon { font-size: 1.05rem; flex-shrink: 0; color: var(--teal-light); }
+.step-list li.active .done-icon { color: var(--green); }
 .step-list li:hover { background: rgba(255,255,255,0.1); transform: translateX(3px); }
 .step-list li.active {
   background: var(--white);
@@ -175,8 +181,6 @@ body {
   margin-right: -1.25rem;
   padding-right: 1.5rem;
 }
-.step-list li.done::before { content: "✓ "; color: var(--teal-light); }
-.step-list li.active.done::before { color: var(--navy-900); }
 
 .content { flex: 1; padding: 2.5rem 3rem 3rem; max-width: 980px; }
 .content-inner { margin-bottom: 2rem; }
@@ -1955,13 +1959,19 @@ function renderSidebar(currentStep) {
   const steps = getSteps(activeUnit);
   const forms = ASKI_FORMS.filter((f) => f.unit === activeUnit);
   const dataStepId = activeUnit === "UP" ? "data_up" : "data_uk";
-  const dataStepLabel = activeUnit === "UP" ? "🗂️ Data Umum Unit Pengolah" : "🗂️ Data Umum Unit Kearsipan";
+  const dataStepLabel = activeUnit === "UP" ? "Data Umum Unit Pengolah" : "Data Umum Unit Kearsipan";
   const groupTitle = activeUnit === "UP" ? "A. Unit Pengolah" : "B. Unit Kearsipan";
-  function item(stepId, label) {
+  const circumference = 113.1;
+  const offset = (circumference - (circumference * prog.pct) / 100).toFixed(1);
+  function item(stepId, label, iconClass, iconColor) {
     const active = stepId === currentStep ? "active" : "";
     const idx = steps.indexOf(stepId);
     const done = idx < state.step ? "done" : "";
-    return `<li class="${active} ${done}" data-step="${stepId}">${label}</li>`;
+    return `<li class="${active} ${done}" data-step="${stepId}">
+      <i class="ti ${iconClass} step-icon" style="color:${iconColor}" aria-hidden="true"></i>
+      <span style="flex:1">${label}</span>
+      ${done ? '<i class="ti ti-circle-check done-icon" aria-hidden="true"></i>' : ""}
+    </li>`;
   }
   return `
     <aside class="sidebar">
@@ -1981,24 +1991,30 @@ function renderSidebar(currentStep) {
         <button type="button" class="user-box-logout" onclick="doAuthLogout()">Keluar</button>
       </div>` : ""}
       <div class="unit-switch">
-        <button type="button" class="${activeUnit === "UP" ? "active" : ""}" data-unit="UP">🗂️ Unit Pengolah</button>
-        <button type="button" class="${activeUnit === "UK" ? "active" : ""}" data-unit="UK">🗄️ Unit Kearsipan</button>
+        <button type="button" class="${activeUnit === "UP" ? "active" : ""}" data-unit="UP"><i class="ti ti-folder" aria-hidden="true"></i> Unit Pengolah</button>
+        <button type="button" class="${activeUnit === "UK" ? "active" : ""}" data-unit="UK"><i class="ti ti-archive" aria-hidden="true"></i> Unit Kearsipan</button>
       </div>
       <div class="progress-box">
-        <div class="progress-label">Progres Pengisian ${activeUnit === "UP" ? "Unit Pengolah" : "Unit Kearsipan"}: ${prog.pct}%</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${prog.pct}%"></div></div>
+        <div class="progress-circle">
+          <svg viewBox="0 0 44 44">
+            <circle class="progress-circle-bg" cx="22" cy="22" r="18"></circle>
+            <circle class="progress-circle-fill" cx="22" cy="22" r="18" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"></circle>
+          </svg>
+          <div class="progress-circle-label">${prog.pct}%</div>
+        </div>
+        <div class="progress-circle-caption">Progres ${activeUnit === "UP" ? "Unit Pengolah" : "Unit Kearsipan"}</div>
       </div>
       <nav>
         <ul class="step-list">
-          ${item("info", "📋 Data Instansi")}
+          ${item("info", "Data Instansi", "ti-file-text", "var(--gold-light)")}
         </ul>
         <div class="nav-group-title">${groupTitle}</div>
         <ul class="step-list">
-          ${item(dataStepId, dataStepLabel)}
-          ${forms.map((f) => item(f.id, `${f.code} ${f.title}`)).join("")}
+          ${item(dataStepId, dataStepLabel, "ti-folder-open", "var(--gold-light)")}
+          ${forms.map((f) => item(f.id, f.title, "ti-clipboard-text", "var(--teal-light)")).join("")}
         </ul>
         <ul class="step-list">
-          ${item("review", "✅ Tinjau &amp; Kirim")}
+          ${item("review", "Tinjau &amp; Kirim", "ti-send", "var(--teal-light)")}
         </ul>
       </nav>
     </aside>
@@ -2110,12 +2126,12 @@ function attachHandlers(step) {
         }
 
         saveDraft();
-        // refresh progress bar without full rerender
+        // refresh progress circle without full rerender
         const pct = totalProgress().pct;
-        const fill = document.querySelector(".progress-fill");
-        const label = document.querySelector(".progress-label");
-        if (fill) fill.style.width = pct + "%";
-        if (label) label.textContent = `Progres Pengisian: ${pct}%`;
+        const fill = document.querySelector(".progress-circle-fill");
+        const label = document.querySelector(".progress-circle-label");
+        if (fill) fill.style.strokeDashoffset = (113.1 - (113.1 * pct) / 100).toFixed(1);
+        if (label) label.textContent = `${pct}%`;
       };
     });
     document.querySelectorAll("[data-skor-qid]").forEach((el) => {
