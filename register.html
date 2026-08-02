@@ -61,13 +61,25 @@ async function register() {
     msg.innerHTML = '<span class="err">Semua kolom wajib diisi.</span>'; return;
   }
 
+  let session = null;
+
   const { data: signUpData, error: signUpError } = await sb.auth.signUp({ email, password });
-  if (signUpError) { msg.innerHTML = `<span class="err">${signUpError.message}</span>`; return; }
+
+  if (signUpError) {
+    // Kemungkinan besar akun ini sudah pernah signUp sebelumnya (mis. sudah
+    // konfirmasi email tapi belum sempat redeem kode). Coba login langsung
+    // memakai email & password yang dimasukkan, alih-alih menampilkan error.
+    const { data: signInData, error: signInError } = await sb.auth.signInWithPassword({ email, password });
+    if (signInError) { msg.innerHTML = `<span class="err">${signUpError.message}</span>`; return; }
+    session = signInData.session;
+  } else {
+    session = signUpData.session;
+  }
 
   // Jika konfirmasi email aktif di project Supabase, sesi belum tersedia
-  // sampai email dikonfirmasi — redeem_invite baru bisa dipanggil setelah login.
-  if (!signUpData.session) {
-    msg.innerHTML = '<span class="ok">Pendaftaran berhasil. Silakan cek email untuk konfirmasi, lalu login untuk menyelesaikan pendaftaran (masukkan kode undangan kembali di halaman ini setelah login).</span>';
+  // sampai email dikonfirmasi.
+  if (!session) {
+    msg.innerHTML = '<span class="ok">Pendaftaran berhasil. Silakan cek email untuk konfirmasi, lalu buka halaman ini lagi dan masukkan kode undangan + email + kata sandi yang sama untuk menyelesaikan pendaftaran.</span>';
     return;
   }
 
