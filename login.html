@@ -2952,6 +2952,7 @@ function renderLoginGate(errorMsg, infoMsg) {
       <div class="auth-msg ${errorMsg ? "err" : infoMsg ? "ok" : ""}" id="loginGateMsg">${errorMsg || infoMsg || ""}</div>
     </form>
     <div class="auth-foot">Belum punya akun? Hubungi admin untuk kode undangan, lalu <a href="register.html">REGISTRASI</a>.</div>
+    <div class="auth-foot">Login <a href="https://kabasmean.github.io/ASKI/admin.html">ADMINISTRATOR</a></div>
   `);
   if (!supabaseClient) {
     document.getElementById("loginGateMsg").innerHTML =
