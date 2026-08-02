@@ -31,6 +31,9 @@
   .badge { display:inline-block; padding:2px 8px; border-radius:20px; font-size:11px; background:#fee2e2; color:#b91c1c; }
   .badge.used { background:#f3f4f6; color:#6b7280; }
   code.inv { background:#f3f4f6; padding:2px 6px; border-radius:4px; }
+  .btn-sm { padding:4px 9px; font-size:12px; border-radius:5px; margin-right:4px; }
+  .btn-danger { background:#fff; border:1px solid #fecaca; color:#b91c1c; }
+  .btn-danger:hover { background:#fee2e2; }
 </style>
 </head>
 <body>
@@ -91,8 +94,8 @@
     <div class="card">
       <h2>Daftar Dinas & Kode Undangan</h2>
       <table>
-        <thead><tr><th>Dinas</th><th>Kode</th><th>Status</th><th>Dibuat</th></tr></thead>
-        <tbody id="inviteTable"><tr><td colspan="4">Memuat…</td></tr></tbody>
+        <thead><tr><th>Dinas</th><th>Kode</th><th>Status</th><th>Dibuat</th><th>Aksi</th></tr></thead>
+        <tbody id="inviteTable"><tr><td colspan="5">Memuat…</td></tr></tbody>
       </table>
     </div>
 
@@ -201,14 +204,32 @@ async function loadInvites() {
     .select("code, used, created_at, dinas:dinas_id(nama)")
     .order("created_at", { ascending: false });
   const tbody = document.getElementById("inviteTable");
-  if (error || !data || !data.length) { tbody.innerHTML = "<tr><td colspan='4'>Belum ada kode undangan.</td></tr>"; return; }
+  if (error || !data || !data.length) { tbody.innerHTML = "<tr><td colspan='5'>Belum ada kode undangan.</td></tr>"; return; }
   tbody.innerHTML = data.map((i) => `
     <tr>
       <td>${i.dinas ? i.dinas.nama : "-"}</td>
       <td><code class="inv">${i.code}</code></td>
       <td><span class="badge ${i.used ? "used" : ""}">${i.used ? "Terpakai" : "Belum dipakai"}</span></td>
       <td>${new Date(i.created_at).toLocaleString("id-ID")}</td>
+      <td>
+        ${i.used ? `<button class="btn-ghost btn-sm" onclick="resetInvite('${i.code}')">Reset</button>` : ""}
+        <button class="btn-danger btn-sm" onclick="deleteInvite('${i.code}')">Hapus</button>
+      </td>
     </tr>`).join("");
+}
+
+async function resetInvite(code) {
+  if (!confirm(`Reset kode ${code} jadi belum dipakai? Akun yang sudah terlanjur pakai kode ini tidak akan terpengaruh, hanya statusnya yang berubah sehingga kode bisa dipakai lagi.`)) return;
+  const { error } = await sb.from("invites").update({ used: false, used_by: null }).eq("code", code);
+  if (error) { alert(error.message); return; }
+  await loadInvites();
+}
+
+async function deleteInvite(code) {
+  if (!confirm(`Hapus kode ${code}? Tindakan ini tidak bisa dibatalkan.`)) return;
+  const { error } = await sb.from("invites").delete().eq("code", code);
+  if (error) { alert(error.message); return; }
+  await loadInvites();
 }
 
 async function loadUsers() {
